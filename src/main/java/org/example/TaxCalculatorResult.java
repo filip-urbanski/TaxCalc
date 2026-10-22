@@ -22,4 +22,21 @@ public class TaxCalculatorResult {
     BigDecimal taxFreeIncome;              // Monthly tax-free allowance
     BigDecimal advanceTaxPaid;             // Final advance tax paid
     BigDecimal netIncome;
+
+    @Override
+    public String toString(){
+        return "PayrollBreakdown{" +
+                "socSecurity=" + socSecurity +
+                ", socHealthSecurity=" + socHealthSecurity +
+                ", socSickSecurity=" + socSickSecurity +
+                ", taxDeductibleExpenses=" + taxDeductibleExpenses +
+                ", socHealth1=" + socHealth1 +
+                ", socHealth2=" + socHealth2 +
+                ", advanceTaxPaidAdvanceTax=" + advanceTaxPaidAdvanceTax +
+                ", taxedIncome=" + taxedIncome +
+                ", taxFreeIncome=" + taxFreeIncome +
+                ", advanceTaxPaid=" + advanceTaxPaid +
+                ", netIncome=" + netIncome +
+                '}';
+    }
 }
