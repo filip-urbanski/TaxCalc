@@ -5,44 +5,48 @@ import java.io.InputStreamReader;
 
 public class Main {
 
-    public static EmploymentType contractType = null;
-    public static double income = 0;
-
+    public static EmploymentType contractType;
+    public static double income;
 
     public static void main(String[] args) {
         try {
             InputStreamReader isr = new InputStreamReader(System.in);
             BufferedReader br = new BufferedReader(isr);
 
-            while (!validateIncome(income)){
-                System.out.print("Enter income: ");
-                income = Double.parseDouble(br.readLine());
+            while (!validateIncome(income)) {
+                System.out.print("Enter income (must be greater than 0): ");
+                try {
+                    income = Double.parseDouble(br.readLine());
+                } catch (NumberFormatException e) {
+                    System.out.println("Please enter a valid number.");
+                }
             }
 
-            while (contractType == null){
+            while (contractType == null) {
                 System.out.print("Contract Type: (E)mployment, (C)ivil: ");
                 contractType = stringToEmploymentType(br.readLine());
             }
 
             TaxCalculator taxCalculator = new TaxCalculator();
-            taxCalculator.tax(income, contractType);
+            TaxCalculatorResult result = taxCalculator.tax(income, contractType);
+            System.out.println(result);
 
         } catch (Exception ex) {
-            System.out.println("Incorrect");
-            System.err.println(ex);
-            return;
+            System.out.println("Incorrect input or fatal error.");
         }
     }
 
-    private static EmploymentType stringToEmploymentType(String input){
-        return switch (input) {
+    private static EmploymentType stringToEmploymentType(String input) {
+        if (input == null) return null;
+
+        return switch (input.toUpperCase()) { // Added toUpperCase() so 'e' and 'c' also work
             case "E" -> EmploymentType.EMPLOYMENT;
             case "C" -> EmploymentType.CIVIL;
             default -> null;
         };
     }
 
-    private static boolean validateIncome(Double income){
-        return income <= 0;
+    private static boolean validateIncome(double income) {
+        return income > 0;
     }
 }
