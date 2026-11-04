@@ -10,9 +10,9 @@
 5. add tax() method to call
 
 //session 2
-6. replace if clauses with a switch statement
-7. add DTO TaxCalculatorResult for storing and printing
-8. add function which transforms input into enum
-9. implement input validation for income and employment type
-10. override toString() to output DTO values
-11. extract emplyemnt and civil processing to functions
+6. replace if clauses with a switch statement 
+7. add DTO TaxCalculatorResult for storing and printing 
+8. add function which transforms input into enum 
+9. implement input validation for income and employment type 
+10. override toString() to output DTO values 
+11. extract emplyemnt and civil processing to functions 
