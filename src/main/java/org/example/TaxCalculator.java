@@ -34,7 +34,7 @@ public class TaxCalculator {
         double advanceTax = (taxedIncome0 * TaxConfig.ADVANCE_TAX_RATE) / 100;
 
         double advanceTaxPaid = advanceTax - socHealth2 - taxFreeIncome;
-        double advanceTaxPaid0 = Math.round(advanceTaxPaid); // PL Advance tax is rounded to whole numbers
+        double advanceTaxPaid0 = Math.round(advanceTaxPaid);
 
         double netIncome = baseIncome - (totalEmployeeSocial + socHealth1 + advanceTaxPaid0);
 
@@ -69,9 +69,9 @@ public class TaxCalculator {
         double taxFreeIncome = TaxConfig.EMPLOYMENT_TAX_FREE_INCOME;
 
         double taxedIncome = dIncome - taxDeductibleExpenses;
-        double taxedIncome0 = Math.round(taxedIncome); // PL Tax basis is rounded to whole numbers
+        double taxedIncomeRounded = Math.round(taxedIncome);
 
-        double advanceTax = (taxedIncome0 * TaxConfig.ADVANCE_TAX_RATE) / 100;
+        double advanceTax = (taxedIncomeRounded * TaxConfig.ADVANCE_TAX_RATE) / 100;
 
         double advanceTaxPaid = advanceTax - socHealth2 - taxFreeIncome;
 
@@ -80,7 +80,7 @@ public class TaxCalculator {
             advanceTaxPaid = 0;
         }
 
-        double advanceTaxPaid0 = Math.round(advanceTaxPaid); // PL Advance tax is rounded to whole numbers
+        double advanceTaxPaid0 = Math.round(advanceTaxPaid);
 
         double netIncome = baseIncome - (totalEmployeeSocial + socHealth1 + advanceTaxPaid0);
 
@@ -93,7 +93,7 @@ public class TaxCalculator {
                 .socHealth1(BigDecimal.valueOf(socHealth1))
                 .socHealth2(BigDecimal.valueOf(socHealth2))
                 .advanceTaxPaidAdvanceTax(BigDecimal.valueOf(advanceTax))
-                .taxedIncome(BigDecimal.valueOf(taxedIncome0))
+                .taxedIncome(BigDecimal.valueOf(taxedIncomeRounded))
                 .taxFreeIncome(BigDecimal.valueOf(taxFreeIncome))
                 .advanceTaxPaid(BigDecimal.valueOf(advanceTaxPaid0))
                 .netIncome(BigDecimal.valueOf(netIncome))

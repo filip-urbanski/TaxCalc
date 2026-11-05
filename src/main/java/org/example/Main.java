@@ -29,7 +29,7 @@ public class Main {
 
             TaxCalculator taxCalculator = new TaxCalculator();
             TaxCalculatorResult result = taxCalculator.tax(income, contractType);
-            System.out.println(result);
+            System.out.println(result.toString());
 
         } catch (Exception ex) {
             System.out.println("Incorrect input or fatal error.");
@@ -39,7 +39,7 @@ public class Main {
     private static EmploymentType stringToEmploymentType(String input) {
         if (input == null) return null;
 
-        return switch (input.toUpperCase()) { // Added toUpperCase() so 'e' and 'c' also work
+        return switch (input.toUpperCase()) {
             case "E" -> EmploymentType.EMPLOYMENT;
             case "C" -> EmploymentType.CIVIL;
             default -> null;
