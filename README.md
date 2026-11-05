@@ -1,7 +1,5 @@
 ### Refactoring steps
 
-//TODO consider if the variables shoud be bigdecimal or double
-
 // session 1
 1. set naming standard to Pascal Case
 2. remove unused variables
