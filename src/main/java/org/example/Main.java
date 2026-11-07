@@ -27,8 +27,12 @@ public class Main {
                 contractType = stringToEmploymentType(br.readLine());
             }
 
-            TaxCalculator taxCalculator = new TaxCalculator();
-            TaxCalculatorResult result = taxCalculator.tax(income, contractType);
+            TaxCalculationStrategy strategy = switch (contractType) {
+                case EMPLOYMENT -> new EmploymentTaxStrategy();
+                case CIVIL -> new CivilTaxStrategy();
+            };
+            TaxCalculator taxCalculator = new TaxCalculator(strategy);
+            TaxCalculatorResult result = taxCalculator.tax(income);
             System.out.println(result.toString());
 
         } catch (Exception ex) {
