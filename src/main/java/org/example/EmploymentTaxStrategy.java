@@ -1,13 +1,15 @@
 package org.example;
 
+import java.math.BigDecimal;
+
 public class EmploymentTaxStrategy implements TaxCalculationStrategy {
     @Override
-    public double taxDeductibleExpenses(double incomeAfterSocial) {
+    public BigDecimal taxDeductibleExpenses(BigDecimal incomeAfterSocial) {
         return TaxConfig.EMPLOYMENT_TAX_DEDUCTIBLE;
     }
 
     @Override
-    public double taxFreeIncome() {
+    public BigDecimal taxFreeIncome() {
         return TaxConfig.EMPLOYMENT_TAX_FREE_INCOME;
     }
 

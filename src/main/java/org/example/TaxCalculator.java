@@ -1,52 +1,61 @@
 package org.example;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Objects;
 
 public class TaxCalculator {
+    private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
+
     private final TaxCalculationStrategy strategy;
 
     public TaxCalculator(TaxCalculationStrategy strategy) {
-        this.strategy = strategy;
+        this.strategy = Objects.requireNonNull(strategy);
     }
 
-    public TaxCalculatorResult tax(Double baseIncome) {
-        double socSecurity = (baseIncome * TaxConfig.SOCIAL_SECURITY_RATE) / 100;
-        double socHealthSecurity = (baseIncome * TaxConfig.HEALTH_SECURITY_RATE) / 100;
-        double socSickSecurity = (baseIncome * TaxConfig.SICKNESS_SECURITY_RATE) / 100;
+    public TaxCalculatorResult tax(BigDecimal baseIncome) {
+        BigDecimal socSecurity = percentage(baseIncome, TaxConfig.SOCIAL_SECURITY_RATE);
+        BigDecimal socHealthSecurity = percentage(baseIncome, TaxConfig.HEALTH_SECURITY_RATE);
+        BigDecimal socSickSecurity = percentage(baseIncome, TaxConfig.SICKNESS_SECURITY_RATE);
 
-        double totalEmployeeSocial = socSecurity + socHealthSecurity + socSickSecurity;
-        double incomeAfterSocial = baseIncome - totalEmployeeSocial;
+        BigDecimal totalEmployeeSocial = socSecurity.add(socHealthSecurity).add(socSickSecurity);
+        BigDecimal incomeAfterSocial = baseIncome.subtract(totalEmployeeSocial);
 
-        double socHealth1 = (incomeAfterSocial * TaxConfig.HEALTH_TAX_RATE_1) / 100;
-        double socHealth2 = (incomeAfterSocial * TaxConfig.HEALTH_TAX_RATE_2) / 100;
-        double taxFreeIncome = strategy.taxFreeIncome();
-        double taxDeductibleExpenses = strategy.taxDeductibleExpenses(incomeAfterSocial);
+        BigDecimal socHealth1 = percentage(incomeAfterSocial, TaxConfig.HEALTH_TAX_RATE_1);
+        BigDecimal socHealth2 = percentage(incomeAfterSocial, TaxConfig.HEALTH_TAX_RATE_2);
+        BigDecimal taxFreeIncome = strategy.taxFreeIncome();
+        BigDecimal taxDeductibleExpenses = strategy.taxDeductibleExpenses(incomeAfterSocial);
 
-        double taxedIncome = incomeAfterSocial - taxDeductibleExpenses;
-        double roundedTaxedIncome = Math.round(taxedIncome);
-        double advanceTax = (roundedTaxedIncome * TaxConfig.ADVANCE_TAX_RATE) / 100;
-        double advanceTaxPaid = advanceTax - socHealth2 - taxFreeIncome;
+        BigDecimal taxedIncome = incomeAfterSocial.subtract(taxDeductibleExpenses);
+        BigDecimal roundedTaxedIncome = taxedIncome.setScale(0, RoundingMode.HALF_UP);
+        BigDecimal advanceTax = percentage(roundedTaxedIncome, TaxConfig.ADVANCE_TAX_RATE);
+        BigDecimal advanceTaxPaid = advanceTax.subtract(socHealth2).subtract(taxFreeIncome);
 
-        if (strategy.minimumAdvanceTaxAtZero() && advanceTaxPaid < 0) {
-            advanceTaxPaid = 0;
+        if (strategy.minimumAdvanceTaxAtZero() && advanceTaxPaid.signum() < 0) {
+            advanceTaxPaid = BigDecimal.ZERO;
         }
 
-        double roundedAdvanceTaxPaid = Math.round(advanceTaxPaid);
-        double netIncome = baseIncome - (totalEmployeeSocial + socHealth1 + roundedAdvanceTaxPaid);
+        BigDecimal roundedAdvanceTaxPaid = advanceTaxPaid.setScale(0, RoundingMode.HALF_UP);
+        BigDecimal netIncome = baseIncome.subtract(
+                totalEmployeeSocial.add(socHealth1).add(roundedAdvanceTaxPaid));
 
         return TaxCalculatorResult.builder()
-                .grossAmount(BigDecimal.valueOf(baseIncome))
-                .socSecurity(BigDecimal.valueOf(socSecurity))
-                .socHealthSecurity(BigDecimal.valueOf(socHealthSecurity))
-                .socSickSecurity(BigDecimal.valueOf(socSickSecurity))
-                .taxDeductibleExpenses(BigDecimal.valueOf(taxDeductibleExpenses))
-                .socHealth1(BigDecimal.valueOf(socHealth1))
-                .socHealth2(BigDecimal.valueOf(socHealth2))
-                .advanceTaxPaidAdvanceTax(BigDecimal.valueOf(advanceTax))
-                .taxedIncome(BigDecimal.valueOf(roundedTaxedIncome))
-                .taxFreeIncome(BigDecimal.valueOf(taxFreeIncome))
-                .advanceTaxPaid(BigDecimal.valueOf(roundedAdvanceTaxPaid))
-                .netIncome(BigDecimal.valueOf(netIncome))
+                .grossAmount(baseIncome)
+                .socSecurity(socSecurity)
+                .socHealthSecurity(socHealthSecurity)
+                .socSickSecurity(socSickSecurity)
+                .taxDeductibleExpenses(taxDeductibleExpenses)
+                .socHealth1(socHealth1)
+                .socHealth2(socHealth2)
+                .advanceTaxPaidAdvanceTax(advanceTax)
+                .taxedIncome(roundedTaxedIncome)
+                .taxFreeIncome(taxFreeIncome)
+                .advanceTaxPaid(roundedAdvanceTaxPaid)
+                .netIncome(netIncome)
                 .build();
+    }
+
+    private static BigDecimal percentage(BigDecimal amount, BigDecimal rate) {
+        return amount.multiply(rate).divide(ONE_HUNDRED);
     }
 }

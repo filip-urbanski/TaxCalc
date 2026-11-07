@@ -2,11 +2,12 @@ package org.example;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 
 public class Main {
 
     public static EmploymentType contractType;
-    public static double income;
+    public static BigDecimal income = BigDecimal.ZERO;
 
     public static void main(String[] args) {
         try {
@@ -16,7 +17,7 @@ public class Main {
             while (!validateIncome(income)) {
                 System.out.print("Enter income (must be greater than 0): ");
                 try {
-                    income = Double.parseDouble(br.readLine());
+                    income = new BigDecimal(br.readLine());
                 } catch (NumberFormatException e) {
                     System.out.println("Please enter a valid number.");
                 }
@@ -33,7 +34,7 @@ public class Main {
             };
             TaxCalculator taxCalculator = new TaxCalculator(strategy);
             TaxCalculatorResult result = taxCalculator.tax(income);
-            System.out.println(result.toString());
+            System.out.println(new TaxCalculatorResultFormatter().format(result));
 
         } catch (Exception ex) {
             System.out.println("Incorrect input or fatal error.");
@@ -50,7 +51,7 @@ public class Main {
         };
     }
 
-    private static boolean validateIncome(double income) {
-        return income > 0;
+    private static boolean validateIncome(BigDecimal income) {
+        return income.signum() > 0;
     }
 }

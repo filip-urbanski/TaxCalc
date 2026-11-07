@@ -1,14 +1,18 @@
 package org.example;
 
+import java.math.BigDecimal;
+
 public class CivilTaxStrategy implements TaxCalculationStrategy {
     @Override
-    public double taxDeductibleExpenses(double incomeAfterSocial) {
-        return (incomeAfterSocial * TaxConfig.CIVIL_TAX_DEDUCTIBLE_RATE) / 100;
+    public BigDecimal taxDeductibleExpenses(BigDecimal incomeAfterSocial) {
+        return incomeAfterSocial
+                .multiply(TaxConfig.CIVIL_TAX_DEDUCTIBLE_RATE)
+                .divide(BigDecimal.valueOf(100));
     }
 
     @Override
-    public double taxFreeIncome() {
-        return 0;
+    public BigDecimal taxFreeIncome() {
+        return BigDecimal.ZERO;
     }
 
     @Override

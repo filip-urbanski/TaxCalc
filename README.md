@@ -14,3 +14,8 @@
 9. implement input validation for income and employment type  
 10. override toString() to output DTO values  
 11. extract employemnt and civil processing to functions   
+
+// further refactoring
+12. replace the two tax calculation methods with one method that receives a tax strategy
+13. use BigDecimal for all monetary calculations
+14. move DTO formatting to a dedicated formatter

@@ -1,9 +1,11 @@
 package org.example;
 
-public interface TaxCalculationStrategy {
-    double taxDeductibleExpenses(double incomeAfterSocial);
+import java.math.BigDecimal;
 
-    double taxFreeIncome();
+public interface TaxCalculationStrategy {
+    BigDecimal taxDeductibleExpenses(BigDecimal incomeAfterSocial);
+
+    BigDecimal taxFreeIncome();
 
     boolean minimumAdvanceTaxAtZero();
 }
